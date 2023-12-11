@@ -1,0 +1,16 @@
+# https://docs.ansible.com/ansible/latest/dev_guide/collections_galaxy_meta.html
+namespace: dainok
+name: common
+version: "0.0.1"
+readme: README.md
+authors:
+  - Andrea Dainese (@dainok)
+description: Andrea Dainese's Ansible collection."
+license:
+  - "GPL-3.0-or-later"
+tags:
+  - eda
+homepage: https://github.com/dainok/ansible-collection
+repository: https://github.com/dainok/ansible-collection
+issues: https://github.com/dainok/ansible-collection/issues
+documentation: https://github.com/dainok/ansible-collection/wiki
