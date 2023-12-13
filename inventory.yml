@@ -1,10 +1,9 @@
 all:
   hosts:
-    r1.example.com:
-      ansible_host: 169.254.1.21
-routers:
-  hosts:
-    r[1:9].example.com:
+    169.254.1.21:
+    169.254.1.22:
+    169.254.1.23:
+    169.254.1.24:
   vars:
     ansible_user: admin
     ansible_password: cisco

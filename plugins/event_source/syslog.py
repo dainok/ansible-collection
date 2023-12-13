@@ -288,12 +288,17 @@ class SyslogUDPProtocol(asyncio.DatagramProtocol):
 
         # Parsing Cisco format
         # <133>46: 169.254.1.21: *Dec 11 10:30:05.476: %SYS-5-CONFIG_I: Configured from console by admin on vty0 (169.254.1.1)
+        # {'prival': '133', 'message_id': '46', 'host': '169.254.1.21', 'timestamp': 'Dec 11 10:30:05.476', 'facility': 'SYS', 'severity': '5', 'mnemonic': 'CONFIG_I', 'message': 'Configured from console by admin on vty0 (169.254.1.1)'}
         # <133>47: *Dec 11 10:31:00.332: %SYS-5-CONFIG_I: Configured from console by admin on vty0 (169.254.1.1)
+        # {'prival': '133', 'message_id': '47', 'host': None, 'timestamp': 'Dec 11 10:31:00.332', 'facility': 'SYS', 'severity': '5', 'mnemonic': 'CONFIG_I', 'message': 'Configured from console by admin on vty0 (169.254.1.1)'}
         # <133>Dec 11 11:03:00 169.254.1.21 : *Dec 11 11:02:59.934: %SYS-5-CONFIG_I: Configured from console by admin on vty0 (169.254.1.1)
+        # {'prival': '133', 'message_id': None, 'host': '169.254.1.21', 'timestamp': 'Dec 11 11:02:59.934', 'facility': 'SYS', 'severity': '5', 'mnemonic': 'CONFIG_I', 'message': 'Configured from console by admin on vty0 (169.254.1.1)'}
         # <133>: *Dec 11 10:31:50.813: %SYS-5-CONFIG_I: Configured from console by admin on vty0 (169.254.1.1)
+        # {'prival': '133', 'message_id': None, 'host': None, 'timestamp': ': *Dec 11 10:31:50.813', 'facility': 'SYS', 'severity': '5', 'mnemonic': 'CONFIG_I', 'message': 'Configured from console by admin on vty0 (169.254.1.1)'}
         # <133>: *Mar  1 18:48:50.483 UTC: %SYS-5-CONFIG_I: Configured from console by vty2 (10.34.195.36)
+        # {'prival': '133', 'message_id': None, 'host': None, 'timestamp': ': *Mar  1 18:48:50.483 UTC', 'facility': 'SYS', 'severity': '5', 'mnemonic': 'CONFIG_I', 'message': 'Configured from console by vty2 (10.34.195.36)'}
         # <133>: 00:00:46: %LINK-3-UPDOWN: Interface Port-channel1, changed state to up
-        result = re.match(r"<(?P<prival>\d+)>((?P<message_id>\S+)\s*: )?((?P<host>\S+)\s*: )?\*?(?P<timestamp>.*)\s*: %(?P<facility>[^-]+)-(?P<severity>\d+)-(?P<mnemonic>[^:]+): (?P<message>.*)", raw)
+        result = re.match(r"<(?P<prival>\d+)>(\s*[A-Za-z]{3}\s+\d+\s+\d+:\d+:\d+\s*)?((?P<message_id>\d+)\s*: )?((?P<host>\d+\.\d+\.\d+.\d+)\s*: )?\*?(?P<timestamp>.*)\s*: %(?P<facility>[^-]+)-(?P<severity>\d+)-(?P<mnemonic>[^:]+): (?P<message>.*)", raw)
         if result:
             parsed_data = result.groupdict()
             try:
@@ -323,6 +328,9 @@ class SyslogUDPProtocol(asyncio.DatagramProtocol):
             "process_id": process_id,
             "raw": raw,
         }
+        if host:
+            # Limit the inventory for the action
+            output["meta"] = {"hosts": host}
 
         # Send data to Ansible
         logging.info(f"Sending to EDA {output}")
