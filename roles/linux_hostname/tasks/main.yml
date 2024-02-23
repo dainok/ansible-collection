@@ -1,0 +1,22 @@
+# Configuring /etc/hostname
+- name: CONFIGURING HOSTNAME
+  copy:
+    content: "{{inventory_hostname_short | lower}}\n"
+    dest: /etc/hostname
+    owner: root
+    group: root
+    mode: 0644
+  notify: linux-restart
+# Configuring /etc/hosts
+- name: CONFIGURING HOSTS FILE
+  lineinfile:
+    dest: /etc/hosts
+    regexp: "{{item.regexp}}"
+    line: "{{item.line}}"
+  with_items:
+    - {regexp: "^\\s*#?\\s*127.0.0.1", line: "127.0.0.1       localhost"}
+    - {regexp: "^\\s*#?\\s*::1", line: "::1             localhost ip6-localhost ip6-loopback"}
+    - {regexp: "^\\s*#?\\s*ff02::1", line: "ff02::1         ip6-allnodes"}
+    - {regexp: "^\\s*#?\\s*ff02::2", line: "ff02::2         ip6-allrouters"}
+    - {regexp: "^\\s*#?\\s*127.0.1.1", line: "127.0.1.1       {{inventory_hostname_short}} {{inventory_hostname}}"}
+  notify: hostname-reload

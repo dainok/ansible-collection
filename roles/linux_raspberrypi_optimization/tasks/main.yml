@@ -1,0 +1,19 @@
+# Install required packages
+- name: INSTALLING PACKAGES
+  apt:
+    name: cpufrequtils
+    update_cache: false
+    force_apt_get: true
+    state: latest
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  tags: install
+# Configuring CPUFreqUtils
+- name: CONFIGURING CPUFREQUTILS
+  copy:
+    content: "GOVERNOR=\"powersave\"\n"
+    dest: /etc/default/cpufrequtils
+    owner: root
+    group: root
+    mode: 0644
+  notify: debian-cpufrequtils-restart

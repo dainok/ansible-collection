@@ -1,0 +1,45 @@
+# Default options
+- name: SETTING DEFAULT apt_upgrade
+  set_fact:
+    apt_upgrade: false
+  when: apt_upgrade is not defined
+- name: SETTING DEFAULT apt_cache_age
+  set_fact:
+    apt_cache_age: 86400
+  when: apt_cache_age is not defined
+# Update cache
+- name: UPDATING CACHE
+  ansible.builtin.apt:
+    upgrade: false
+    cache_valid_time: "{{apt_cache_age}}"
+# Upgrade cache and packages
+- name: UPGRADING (SAFE UPGRADE)
+  ansible.builtin.apt:
+    upgrade: true
+    cache_valid_time: "{{apt_cache_age}}"
+    force_apt_get: true
+    autoremove: true
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  when: apt_upgrade
+# Install required packages
+- name: INSTALLING PACKAGES
+  apt:
+    name: "{{apt_installed_packages}}"
+    update_cache: false
+    force_apt_get: true
+    state: latest
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  when: apt_installed_packages is defined
+# Removing unwanted packages
+- name: REMOVING UNWANTED PACKAGES
+  apt:
+    name: "{{apt_removed_packages}}"
+    update_cache: false
+    force_apt_get: true
+    state: absent
+    purge: true
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  when: apt_removed_packages is defined

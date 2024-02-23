@@ -1,4 +1,4 @@
-# ansible-rulebook --rulebook playbook-rulebook-syslog.yml -i inventory.yml --verbose
+# Usage: ansible-rulebook --rulebook playbook-rulebook-syslog.yml -i inventory.yml --verbose
 - name: Listen for events via syslog
   hosts: all
   sources:
@@ -11,5 +11,5 @@
       action:
         run_playbook:
           name: playbook-action.yml
-        #debug:
-        #  msg: "Received: {{ event.message }}"
+        debug:
+          msg: "Received: {{ event.message }}"
