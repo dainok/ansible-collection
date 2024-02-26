@@ -1,0 +1,29 @@
+---
+# Enable services
+- name: ENABLING SERVICES
+  systemd:
+    name: "{{item}}"
+    enabled: yes
+    masked: no
+  with_items: "{{systemd_enabled}}"
+  when: systemd_enabled is defined
+
+
+# Disable services
+- name: DISABLING SERVICES
+  systemd:
+    name: "{{item}}"
+    enabled: no
+    masked: no
+  with_items: "{{systemd_disabled}}"
+  when: systemd_disabled is defined
+
+
+# Disable and mask services
+- name: DISABLING AND MASKING SERVICES
+  systemd:
+    name: "{{item}}"
+    enabled: no
+    masked: no
+  with_items: "{{systemd_masked}}"
+  when: systemd_masked is defined

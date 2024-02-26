@@ -1,5 +1,5 @@
 - name: debian-ssh-restart
   systemd:
-    name: open-vm-tools.service
+    name: ssh.service
     state: restarted
   when: not ansible_check_mode
