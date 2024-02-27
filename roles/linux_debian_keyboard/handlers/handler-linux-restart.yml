@@ -1,8 +1,0 @@
----
-- shell: sleep 5 && reboot
-
-- wait_for_connection:
-    connect_timeout: 20
-    sleep: 15
-    delay: 5
-    timeout: 300

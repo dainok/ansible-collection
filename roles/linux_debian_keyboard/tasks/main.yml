@@ -1,18 +1,13 @@
----
 # Default options
 - set_fact:
     keyboard_model: pc105
   when: keyboard_model is not defined
-
 - set_fact:
     keyboard_layout: us
   when: keyboard_layout is not defined
-
 - set_fact:
     keyboard_variant: ""
   when: keyboard_variant is not defined
-
-
 # Configuring keyboard
 - name: CONFIGURING KEYBOARD
   lineinfile:

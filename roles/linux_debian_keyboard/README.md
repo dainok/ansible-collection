@@ -1,3 +1,5 @@
+# linux_debian_keyboard role
+
 This role reconfigure the keyboard layout.
 
 Prerequisites on Ansible environment:
