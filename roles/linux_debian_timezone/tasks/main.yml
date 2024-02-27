@@ -1,11 +1,4 @@
-# Default options
-- set_fact:
-    timezone: UTC
-  when: timezone is not defined
 # Configuring timezone
 - name: "CONFIGURING TIMEZONE"
-  file:
-    src: "/usr/share/zoneinfo/{{timezone}}"
-    dest: /etc/localtime
-    state: link
-  notify: dpkg-reconfigure-tzdata
+  community.general.timezone:
+    name: "{{ timezone }}"

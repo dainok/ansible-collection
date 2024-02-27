@@ -1,5 +1,5 @@
-- name: debian-ssh-restart
-  systemd:
+- name: DEBIAN-SSH-RESTART
+  ansible.builtin.systemd:
     name: ssh.service
     state: restarted
   when: not ansible_check_mode

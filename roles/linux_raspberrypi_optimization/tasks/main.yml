@@ -1,6 +1,6 @@
 # Install required packages
 - name: INSTALLING PACKAGES
-  apt:
+  ansible.builtin.apt:
     name: cpufrequtils
     update_cache: false
     force_apt_get: true
@@ -10,10 +10,10 @@
   tags: install
 # Configuring CPUFreqUtils
 - name: CONFIGURING CPUFREQUTILS
-  copy:
+  ansible.builtin.copy:
     content: "GOVERNOR=\"powersave\"\n"
     dest: /etc/default/cpufrequtils
     owner: root
     group: root
     mode: 0644
-  notify: debian-cpufrequtils-restart
+  notify: DEBIAN-CPUFREQUTILS-RESTART

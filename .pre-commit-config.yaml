@@ -54,11 +54,11 @@ repos:
     hooks:
       - id: ansible-navigator-lint
         name: ansible-navigator lint
-        entry: venv/bin/ansible-navigator --ee=false lint -m stdout --exclude=venv --exclude=.venv .
+        entry: venv/bin/ansible-navigator --ee=false lint -m stdout roles
         language: script
         pass_filenames: false
       - id: ansible-lint
         name: ansible-lint
-        entry: venv/bin/ansible-lint -p --exclude=venv --exclude=.venv .
+        entry: venv/bin/ansible-lint roles
         language: script
         pass_filenames: false

@@ -1,16 +1,19 @@
 # Default options
-- set_fact:
+- name: SETTING DEFAULT ssh_root_login
+  ansible.builtin.set_fact:
     ssh_root_login: prohibit-password
   when: ssh_root_login is not defined
-- set_fact:
+- name: SETTING DEFAULT ssh_client_alive_interval
+  ansible.builtin.set_fact:
     ssh_client_alive_interval: 14400
   when: ssh_client_alive_interval is not defined
-- set_fact:
+- name: SETTING DEFAULT ssh_client_alive_count
+  ansible.builtin.set_fact:
     ssh_client_alive_count: 5
   when: ssh_client_alive_count is not defined
 # Install required packages
 - name: INSTALLING PACKAGES
-  apt:
+  ansible.builtin.apt:
     name:
       - openssh-server
       - openssh-sftp-server
@@ -23,12 +26,12 @@
   tags: install
 # Configuring OpenSSH Server
 - name: CONFIGURING OPENSSH SERVER
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: "/etc/ssh/sshd_config"
-    regexp: "{{item.regexp}}"
-    line: "{{item.line}}"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
   with_items:
-    - {regexp: "^\\s*#?\\s*PermitRootLogin", line: "PermitRootLogin {{ssh_root_login}}"}
-    - {regexp: "^\\s*#?\\s*ClientAliveInterval", line: "ClientAliveInterval {{ssh_client_alive_interval}}"}
-    - {regexp: "^\\s*#?\\s*ClientAliveCountMax", line: "ClientAliveCountMax {{ssh_client_alive_count}}"}
-  notify: debian-ssh-restart
+    - {regexp: "^\\s*#?\\s*PermitRootLogin", line: "PermitRootLogin {{ ssh_root_login }}"}
+    - {regexp: "^\\s*#?\\s*ClientAliveInterval", line: "ClientAliveInterval {{ ssh_client_alive_interval }}"}
+    - {regexp: "^\\s*#?\\s*ClientAliveCountMax", line: "ClientAliveCountMax {{ ssh_client_alive_count }}"}
+  notify: DEBIAN-SSH-RESTART

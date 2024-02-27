@@ -1,5 +1,5 @@
-- name: debian-cpufrequtils-restart
-  systemd:
+- name: DEBIAN-CPUFREQUTILS-RESTART
+  ansible.builtin.systemd:
     name: cpufrequtils.service
     state: restarted
   when: not ansible_check_mode
