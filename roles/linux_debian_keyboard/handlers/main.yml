@@ -1,0 +1,81 @@
+---
+- name: debian-apache-reload
+  systemd:
+    name: apache2.service
+    state: reloaded
+  when: not ansible_check_mode
+
+- name: debian-reconfigure-keyboard
+  shell: dpkg-reconfigure keyboard-configuration
+  args:
+    DEBIAN_FRONTEND: noninteractive
+  when: not ansible_check_mode
+
+- name: debian-apt-update
+  apt:
+    upgrade: no
+    update_cache: yes
+  when: not ansible_check_mode
+
+- name: debian-cpufrequtils-restart
+  systemd:
+    name: cpufrequtils.service
+    state: restarted
+  when: not ansible_check_mode
+
+- name: debian-ddclient-restart
+  systemd:
+    name: ddclient.service
+    state: restarted
+  when: not ansible_check_mode
+
+- name: debian-mariadb-restart
+  systemd:
+    name: mariadb.service
+    state: restarted
+  when: not ansible_check_mode
+
+- name: debian-mariadb-start
+  systemd:
+    name: mariadb.service
+    state: started
+  when: not ansible_check_mode
+
+- name: debian-mariadb-stop
+  systemd:
+    name: mariadb.service
+    state: stopped
+  when: not ansible_check_mode
+
+- name: debian-ssh-restart
+  systemd:
+    name: open-vm-tools.service
+    state: restarted
+  when: not ansible_check_mode
+
+- name: debian-vmware-tools-reload
+  systemd:
+    name: ssh.service
+    state: restarted
+  when: not ansible_check_mode
+
+- name: debian-unattended-upgrades-restart
+  systemd:
+    name: unattended-upgrades.service
+    state: restarted
+  when: not ansible_check_mode
+
+- name: dpkg-reconfigure-tzdata
+  command: dpkg-reconfigure -f noninteractive tzdata
+
+- name: ios-config-save
+  connection: network_cli
+  become: yes
+  become_method: enable
+  ios_command:
+    commands: "write memory"
+  when: not ansible_check_mode
+
+- name: linux-restart
+  include_tasks: "roles/{{role_name}}/handlers/handler-linux-restart.yml"
+  when: not ansible_check_mode

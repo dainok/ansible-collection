@@ -1,0 +1,25 @@
+---
+# Default options
+- set_fact:
+    keyboard_model: pc105
+  when: keyboard_model is not defined
+
+- set_fact:
+    keyboard_layout: us
+  when: keyboard_layout is not defined
+
+- set_fact:
+    keyboard_variant: ""
+  when: keyboard_variant is not defined
+
+
+# Configuring keyboard
+- name: CONFIGURING KEYBOARD
+  lineinfile:
+    dest: "/etc/default/keyboard"
+    regexp: "{{item.regexp}}"
+    line: "{{item.line}}"
+  with_items:
+    - {regexp: "^\\s*#?\\s*XKBMODEL", line: "XKBMODEL=\"{{keyboard_model}}\""}
+    - {regexp: "^\\s*#?\\s*XKBLAYOUT", line: "XKBLAYOUT=\"{{keyboard_layout}}\""}
+    - {regexp: "^\\s*#?\\s*XKBVARIANT", line: "XKBVARIANT=\"{{keyboard_variant}}\""}
