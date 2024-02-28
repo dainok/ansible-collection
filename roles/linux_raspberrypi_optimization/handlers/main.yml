@@ -2,4 +2,3 @@
   ansible.builtin.systemd:
     name: cpufrequtils.service
     state: restarted
-  when: not ansible_check_mode
