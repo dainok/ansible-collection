@@ -1,0 +1,16 @@
+# Get running-config
+- name: GETTING RUNNING CONFIGURATION
+  cisco.ios.ios_command:
+    commands:
+      - show running-config
+  register: show_running_config
+- name: STORING RUNNING CONFIGURATION
+  ansible.builtin.set_fact:
+    running_config: "{{ show_running_config.stdout | join('') }}"
+# Configure interfaces
+- name: CONFIGURE INTERFACE
+  cisco.ios.ios_config:
+    lines: "{{ interface_profiles[item.profile] }}"
+    parents: "interface {{ item.interface }}"
+    before: "default interface {{ item.interface }}"
+  with_items: "{{ interfaces }}"

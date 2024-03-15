@@ -6,3 +6,14 @@ Prerequisites on Ansible environment:
 
 - `vlans`: a list of dict describing VLANs ({"id": 20, "name": "SERVER"})
 - `mtu` (optional): the  MTU used (default is 1500)
+
+Example:
+
+```yaml
+mtu: 1500
+vlans:
+  - id: 20
+    name: SERVER
+  - id: 30
+    name: CLIENT
+```

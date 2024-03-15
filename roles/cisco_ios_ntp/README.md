@@ -9,3 +9,13 @@ Prerequisites on Ansible environment:
 Warning:
 
 - Review if the configuration matches your security critierias.
+
+Example:
+
+```yaml
+ntp_servers:
+  - 0.pool.ntp.org
+  - 1.pool.ntp.org
+  - 2.pool.ntp.org
+  - 3.pool.ntp.org
+```

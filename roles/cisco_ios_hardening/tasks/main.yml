@@ -12,10 +12,12 @@
   cisco.ios.ios_config:
     running_config: "{{ running_config }}"
     lines:
+      - ip dhcp snooping
       - ip scp server enable
       - ip ssh authentication-retries 5
       - ip ssh time-out 60
       - ip ssh version 2
+      - lldp run
       - logging buffered 65536 informational
       - no ip http secure-server
       - no ip http server
