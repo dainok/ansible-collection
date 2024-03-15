@@ -24,9 +24,14 @@
       - service tcp-keepalives-in
       - service tcp-keepalives-out
       - vtp mode transparent
-# - name: CHECKING DEFAULT COMMANDS
-# - no ip source-route BLIND
-# - no service config
+# Generic hardening with default commands
+- name: CHECKING DEFAULT COMMAND
+  ansible.builtin.include_tasks: check_default_command.yml
+  with_items:
+    - ip source-route
+    - service config
+  loop_control:
+    loop_var: line
 # Console hardening
 - name: HARDENING CONSOLE
   cisco.ios.ios_config:

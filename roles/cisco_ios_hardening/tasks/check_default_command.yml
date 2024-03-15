@@ -1,0 +1,15 @@
+# Define regex
+- name: SETTING REGEX
+  ansible.builtin.set_fact:
+    regex: "^{{ line }}.*$"
+# Check if command is configured
+- name: GETTING CURRENT LINE
+  ansible.builtin.set_fact:
+    matching_lines: "{{ running_config | regex_findall(regex, multiline=True) | join('\n') }}"
+# Remove lines
+- name: REMOVING LINE
+  cisco.ios.ios_config:
+    running_config: "{{ running_config }}"
+    lines:
+      - "no {{ line }}"
+  when: matching_lines | length > 0
