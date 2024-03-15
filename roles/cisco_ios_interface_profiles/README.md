@@ -33,6 +33,7 @@ interface_profiles:
     - switchport trunk encapsulation dot1q
     - switchport mode trunk
     - switchport nonegotiate
+    - udld port aggressive
   disabled_port_profile:
     - shutdown
 interfaces:
