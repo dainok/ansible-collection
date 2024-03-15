@@ -1,0 +1,40 @@
+# Get running-config
+- name: GETTING RUNNING CONFIGURATION
+  cisco.ios.ios_command:
+    commands:
+      - show running-config
+  register: show_running_config
+- name: STORING RUNNING CONFIGURATION
+  ansible.builtin.set_fact:
+    running_config: "{{ show_running_config.stdout | join('') }}"
+# Default options
+- name: SETTING DEFAULT timezone
+  ansible.builtin.set_fact:
+    timezone: GMT 0 0
+  when: dns_servers is not defined
+# Setting timezone
+- name: CONFIGURING TIMEZONE
+  cisco.ios.ios_config:
+    running_config: "{{ running_config }}"
+    lines:
+      - "clock timezone {{ timezone }}"
+# Setting daylight saving time
+- name: CONFIGURING DAYLIGHT SAVING TIME
+  cisco.ios.ios_config:
+    running_config: "{{ running_config }}"
+    lines:
+      - "clock summer-time {{ summertime }}"
+  when: summertime is defined
+# Removing daylight saving time
+- name: REMOVE CURRENT DAyLIGHT SAVING TIME
+  when: summertime is not defined
+  block:
+    - name: GETTING CURRENT DAYLIGHT SAVING TIME
+      ansible.builtin.set_fact:
+        current_summertime: "{{ running_config | regex_findall('^clock summer-time .*$', multiline=True) | join('\n') }}"
+    - name: "REMOVING DAYLIGHT SAVING TIME"
+      cisco.ios.ios_config:
+        running_config: "{{ running_config }}"
+        lines:
+          - "no clock summer-time"
+      when: current_summertime

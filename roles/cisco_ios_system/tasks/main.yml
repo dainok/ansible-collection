@@ -1,0 +1,32 @@
+# Mandatory options
+- name: CHECK mgmt_interface
+  ansible.builtin.fail:
+    msg: mgmt_interface is not set
+  when: mgmt_interface is not defined
+# Default options
+- name: SETTING DEFAULT dns_servers
+  ansible.builtin.set_fact:
+    dns_servers: []
+  when: dns_servers is not defined
+# Set and normalize hostname and domain
+- name: SETTING FACTS
+  ansible.builtin.set_fact:
+    dns_lookup: false
+    device_hostname: "{{ inventory_hostname_short | upper }}"
+    device_domain: "{{ inventory_hostname.split('.', 1)[1] | lower }}"
+# Set domain lookup if DNS servers are defined
+- name: SETTING DEFAULT dns_servers
+  ansible.builtin.set_fact:
+    dns_lookup: true
+  when: dns_servers|length > 0
+# Configuring hostname
+- name: CONFIGURING HOSTNAME
+  cisco.ios.ios_system:
+    hostname: "{{ device_hostname }}"
+    domain_name: "{{ device_domain }}"
+# Configure DNS lookup
+- name: CONFIGURE DNS LOOKUP
+  cisco.ios.ios_system:
+    lookup_source: "{{ mgmt_interface }}"
+    lookup_enabled: "{{ dns_lookup }}"
+    name_servers: "{{ dns_servers }}"

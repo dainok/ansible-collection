@@ -1,0 +1,16 @@
+# Mandatory options
+- name: CHECK ntp_servers
+  ansible.builtin.fail:
+    msg: ntp_servers is not set
+  when: ntp_servers is not defined
+# Convert a list of IP into a list of peers
+- name: SETTING NTP PEER LIST
+  ansible.builtin.set_fact:
+    ntp_peers_config_list: "{{ ntp_peers_config_list | default([]) + [{'peer': item}] }}"
+  with_items: "{{ ntp_servers }}"
+# Override the current configuration
+- name: CONFIGURING NTP PEERS
+  cisco.ios.ios_ntp_global:
+    config:
+      peers: "{{ ntp_peers_config_list }}"
+    state: replaced

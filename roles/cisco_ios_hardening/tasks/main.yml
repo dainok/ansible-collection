@@ -1,0 +1,62 @@
+# Get running-config
+- name: GETTING RUNNING CONFIGURATION
+  cisco.ios.ios_command:
+    commands:
+      - show running-config
+  register: show_running_config
+- name: STORING RUNNING CONFIGURATION
+  ansible.builtin.set_fact:
+    running_config: "{{ show_running_config.stdout | join('') }}"
+# Generic hardening
+- name: HARDENING
+  cisco.ios.ios_config:
+    running_config: "{{ running_config }}"
+    lines:
+      - ip scp server enable
+      - ip ssh authentication-retries 5
+      - ip ssh time-out 60
+      - ip ssh version 2
+      - logging buffered 65536 informational
+      - no ip http secure-server
+      - no ip http server
+      - service password-encryption
+      - service timestamps log datetime msec localtime show-timezone
+      - service tcp-keepalives-in
+      - service tcp-keepalives-out
+      - vtp mode transparent
+# - name: CHECKING DEFAULT COMMANDS
+# - no ip source-route BLIND
+# - no service config
+# Console hardening
+- name: HARDENING CONSOLE
+  cisco.ios.ios_config:
+    running_config: "{{ running_config }}"
+    lines:
+      - exec-timeout 5 0
+    parents:
+      - line con 0
+# AUX hardening
+- name: GETTING AUX LINES
+  ansible.builtin.set_fact:
+    aux_lines: "{{ running_config | regex_findall('^line aux .*', multiline=True) }}"
+- name: HARDENING AUX
+  cisco.ios.ios_config:
+    running_config: "{{ running_config }}"
+    lines:
+      - exec-timeout 0 1
+      - no exec
+      - transport output none
+    parents: "{{ item }}"
+  with_items: "{{ aux_lines }}"
+# VTYS hardening
+- name: GETTING VTY LINES
+  ansible.builtin.set_fact:
+    vty_lines: "{{ running_config | regex_findall('^line vty .*', multiline=True) }}"
+- name: HARDENING VTYS
+  cisco.ios.ios_config:
+    running_config: "{{ running_config }}"
+    lines:
+      - exec-timeout 5 0
+      - transport input ssh
+    parents: "{{ item }}"
+  with_items: "{{ vty_lines }}"
