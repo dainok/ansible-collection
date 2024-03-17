@@ -8,9 +8,48 @@
   ansible.builtin.set_fact:
     ntp_peers_config_list: "{{ ntp_peers_config_list | default([]) + [{'peer': item}] }}"
   with_items: "{{ ntp_servers }}"
+- name: SETTING NTP ACES LIST
+  ansible.builtin.set_fact:
+    ntp_aces_config_list: "{{ ntp_aces_config_list | default([]) + [{'grant': 'permit', 'source': {'host': item}}] }}"
+  with_items: "{{ ntp_servers }}"
+# Create an ACL to deny any incoming NTP requests
+- name: CONFIGURING ACL FOR NTP SERVERS
+  cisco.ios.ios_acls:
+    state: replaced
+    config:
+      - afi: ipv4
+        acls:
+          - name: ACL_NTP_SERVERS
+            acl_type: standard
+            aces:
+              - grant: deny
+                source:
+                  any: true
+# Create an ACL to allow outgoing NTP queries
+- name: CONFIGURING ACL FOR NTP PEERS
+  cisco.ios.ios_acls:
+    state: replaced
+    config:
+      - afi: ipv4
+        acls:
+          - name: ACL_NTP_PEERS
+            acl_type: standard
+            aces:
+              - grant: permit
+                source:
+                  host: 1.1.1.1
 # Override the current configuration
 - name: CONFIGURING NTP PEERS
   cisco.ios.ios_ntp_global:
     config:
+      logging: true
       peers: "{{ ntp_peers_config_list }}"
+      source: "{{ mgmt_interface }}"
+      access_group:
+        peer:
+          - access_list: ACL_NTP_PEERS
+            ipv4: true
+        serve:
+          - access_list: ACL_NTP_SERVERS
+            ipv4: true
     state: replaced

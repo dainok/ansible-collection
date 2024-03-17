@@ -2,9 +2,12 @@
 
 This role configure NTP peers on Cisco IOS devices.
 
+Inspired by: [Nick Russo's templates](https://github.com/nickrusso42518/net-templates/blob/main/ntp/client_config.txt)
+
 Prerequisites on Ansible environment:
 
 - `ntp_servers`: a list of DNS servers to be used.
+- `mgmt_interface`: the interface used to source NTP requests.
 
 Warning:
 
