@@ -4,7 +4,7 @@ This role configure ports based on profiles.
 
 Prerequisites on Ansible environment:
 
-- `interfaces`: a list of dict defining interface and profile name (example {"interface": "Ethernet0/0", "profile": "access_port"}).
+- `interfaces` (optional): a list of dict defining interface and profile name (example {"interface": "Ethernet0/0", "profile": "access_port"}).
 - `interface_profiles`: a list of dict defining each profile with associated configuration lines (example {"disabled_port_profile": ["shutdown"]}).
 
 Example:

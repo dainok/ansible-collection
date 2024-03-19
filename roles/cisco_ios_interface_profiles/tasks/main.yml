@@ -1,3 +1,8 @@
+# Default options
+- name: SETTING DEFAULT interfaces
+  ansible.builtin.set_fact:
+    interfaces: []
+  when: interfaces is not defined
 # Get running-config
 - name: GETTING RUNNING CONFIGURATION
   cisco.ios.ios_command:
