@@ -3,11 +3,6 @@
   ansible.builtin.fail:
     msg: vlans is not set
   when: vlans is not defined
-# Default options
-- name: SETTING DEFAULT mtu
-  ansible.builtin.set_fact:
-    mtu: 1500
-  when: mtu is not defined
 # Convert a list of VLAN to be used with ios_vlans module
 - name: SETTING VLAN LIST
   ansible.builtin.set_fact:

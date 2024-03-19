@@ -1,7 +1,7 @@
 # https://docs.ansible.com/ansible/latest/dev_guide/collections_galaxy_meta.html
 namespace: dainok
 name: common
-version: "0.0.10"
+version: "0.0.11"
 readme: README.md
 authors:
   - Andrea Dainese (@dainok)
