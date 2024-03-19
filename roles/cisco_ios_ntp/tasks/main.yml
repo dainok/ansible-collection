@@ -34,10 +34,7 @@
         acls:
           - name: ACL_NTP_PEERS
             acl_type: standard
-            aces:
-              - grant: permit
-                source:
-                  host: 1.1.1.1
+            aces: "{{ ntp_aces_config_list }}"
 # Override the current configuration
 - name: CONFIGURING NTP PEERS
   cisco.ios.ios_ntp_global:
