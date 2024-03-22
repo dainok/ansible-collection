@@ -14,3 +14,21 @@ homepage: https://github.com/dainok/ansible-collection
 repository: https://github.com/dainok/ansible-collection
 issues: https://github.com/dainok/ansible-collection/issues
 documentation: https://github.com/dainok/ansible-collection/wiki
+build_ignore:
+  - .ansible-lint
+  - .bandit.yml
+  - .gitignore
+  - .flake8
+  - .markdownlint.yaml
+  - .pylintrc
+  - .pydocstyle.ini
+  - .pre-commit-config.yaml
+  - .yamllint.yml
+  - .yamllint
+  - .yamlfmt
+  - ansible-navigator.log
+  - inventory.yml
+  - playbook-action.yml
+  - playbook-rulebook-syslog.yml
+  - requirements.txt
+  - venv
