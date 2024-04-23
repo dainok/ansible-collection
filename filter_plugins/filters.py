@@ -4,7 +4,7 @@ class FilterModule(object):
 	"""Ansible filter."""
 
 	def cidr_to_netmask(self, network: str) -> str:
-		"""From CIDR (10.1.2.0/24) return network (255.255.255.0)"""
+		"""From CIDR (10.1.2.0/24) return netmask (255.255.255.0)"""
 		ip = ipaddress.IPv4Network(network)
 		return str(ip.netmask)
 	
@@ -19,7 +19,7 @@ class FilterModule(object):
 		return ip.prefixlen
 
 	def cidr_to_wildcard(self, network: str) -> str:
-		"""From CIDR (10.1.2.0/24) return network (0.0.0.255)"""
+		"""From CIDR (10.1.2.0/24) return wildcard (0.0.0.255)"""
 		ip = ipaddress.IPv4Network(network)
 		return str(ip.hostmask)
 
