@@ -103,17 +103,9 @@ async def main(queue: asyncio.Queue, args: dict[str, Any]) -> None:
 
 if __name__ == "__main__":
     # Only called when testing plugin directly, without ansible-rulebook
-    # instance = os.environ.get('SN_HOST')
-    # username = os.environ.get('SN_USERNAME')
-    # password = os.environ.get('SN_PASSWORD')
-    # table = os.environ.get('SN_TABLE')
-
     class MockQueue:
         """Test class."""
 
         async def put(self, event):
             """Print the event."""
             print(event)
-
-    # asyncio.run(main(MockQueue(), {"instance": instance, "username": username, "password": password, "table": table}))
-    # asyncio.run(main(MockQueue(), {}))
