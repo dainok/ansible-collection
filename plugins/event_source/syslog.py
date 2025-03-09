@@ -32,105 +32,43 @@ class SyslogUDPProtocol(asyncio.DatagramProtocol):
     async def payload_processor(self, data, addr):
         """Process syslog packet."""
         raw = data.decode()
-        facility = None
-        severity = None
-        version = None
-        # hostname = None
-        application = None
-        process_id = None
-        message_id = None
-        message = raw
-        message_format = None
-        # encoding = None
-        # full_data = None
-        # data_format = None
-        timestamp = None
-        host = None
-
         logging.info("Received Syslog message: %s", raw)
 
-        # Parsing RFC5424 format
+        # Parsing
         result = re.match(
-            r"<(?P<prival>\d+)>(?P<version>\d+) (?P<timestamp>\S+) (?P<host>\S+) (?P<application>\S+) (?P<process_id>\S+) (?P<message_id>\S+) (?P<message>.*)",
+            r"<(?P<prival>\d+)>(?P<version>\d+): (?P<host>\w+): (?P<seq>\d+): (?P<timestamp>\w+\s+\d+\s+\d+\s+\d+:\d+:\d+\.\d+): %(?P<facility>\w+)-(?P<severity>\d+)-(?P<mnemonic>[\w_]+): (?P<message>.+)",
             raw,
         )
         if result:
             parsed_data = result.groupdict()
             try:
-                message_format = "rfc5424"
                 prival = int(parsed_data.get("prival"))
-                facility = int(prival / 8)
-                severity = int(prival % 8)
                 version = int(parsed_data.get("version"))
+                host = parsed_data.get("host").lower() + ".example.com"
+                seq = int(parsed_data.get("seq"))
                 timestamp = parsed_data.get("timestamp")
-                host = parsed_data.get("host")
-                application = (
-                    parsed_data.get("appplication")
-                    if parsed_data.get("appplication") != "-"
-                    else None
-                )
-                process_id = (
-                    int(parsed_data.get("process_id"))
-                    if parsed_data.get("process_id") != "-"
-                    else None
-                )
-                message_id = (
-                    int(parsed_data.get("message_id"))
-                    if parsed_data.get("message_id") != "-"
-                    else None
-                )
-                message = parsed_data.get("message")
-            except ValueError:
-                # RFC5424 parsing failure
-                logging.warning("Message is not RFC5424 compliant")
-
-        # Parsing Cisco format
-        # <133>46: 169.254.1.21: *Dec 11 10:30:05.476: %SYS-5-CONFIG_I: Configured from console by admin on vty0 (169.254.1.1)
-        # {'prival': '133', 'message_id': '46', 'host': '169.254.1.21', 'timestamp': 'Dec 11 10:30:05.476', 'facility': 'SYS', 'severity': '5', 'mnemonic': 'CONFIG_I', 'message': 'Configured from console by admin on vty0 (169.254.1.1)'}
-        # <133>47: *Dec 11 10:31:00.332: %SYS-5-CONFIG_I: Configured from console by admin on vty0 (169.254.1.1)
-        # {'prival': '133', 'message_id': '47', 'host': None, 'timestamp': 'Dec 11 10:31:00.332', 'facility': 'SYS', 'severity': '5', 'mnemonic': 'CONFIG_I', 'message': 'Configured from console by admin on vty0 (169.254.1.1)'}
-        # <133>Dec 11 11:03:00 169.254.1.21 : *Dec 11 11:02:59.934: %SYS-5-CONFIG_I: Configured from console by admin on vty0 (169.254.1.1)
-        # {'prival': '133', 'message_id': None, 'host': '169.254.1.21', 'timestamp': 'Dec 11 11:02:59.934', 'facility': 'SYS', 'severity': '5', 'mnemonic': 'CONFIG_I', 'message': 'Configured from console by admin on vty0 (169.254.1.1)'}
-        # <133>: *Dec 11 10:31:50.813: %SYS-5-CONFIG_I: Configured from console by admin on vty0 (169.254.1.1)
-        # {'prival': '133', 'message_id': None, 'host': None, 'timestamp': ': *Dec 11 10:31:50.813', 'facility': 'SYS', 'severity': '5', 'mnemonic': 'CONFIG_I', 'message': 'Configured from console by admin on vty0 (169.254.1.1)'}
-        # <133>: *Mar  1 18:48:50.483 UTC: %SYS-5-CONFIG_I: Configured from console by vty2 (10.34.195.36)
-        # {'prival': '133', 'message_id': None, 'host': None, 'timestamp': ': *Mar  1 18:48:50.483 UTC', 'facility': 'SYS', 'severity': '5', 'mnemonic': 'CONFIG_I', 'message': 'Configured from console by vty2 (10.34.195.36)'}
-        # <133>: 00:00:46: %LINK-3-UPDOWN: Interface Port-channel1, changed state to up
-        result = re.match(
-            r"<(?P<prival>\d+)>(\s*[A-Za-z]{3}\s+\d+\s+\d+:\d+:\d+\s*)?((?P<message_id>\d+)\s*: )?((?P<host>\d+\.\d+\.\d+.\d+)\s*: )?\*?(?P<timestamp>.*)\s*: %(?P<facility>[^-]+)-(?P<severity>\d+)-(?P<mnemonic>[^:]+): (?P<message>.*)",
-            raw,
-        )
-        if result:
-            parsed_data = result.groupdict()
-            try:
-                message_format = "cisco"
-                prival = int(parsed_data.get("prival"))
-                facility = int(prival / 8)
-                severity = int(prival % 8)
-                timestamp = parsed_data.get("timestamp")
-                host = parsed_data.get("host")
-                message_id = (
-                    int(parsed_data.get("message_id"))
-                    if parsed_data.get("message_id")
-                    else None
-                )
+                # facility = int(prival / 8)
+                facility = parsed_data.get("facility")
+                # severity = int(prival % 8)
+                severity = parsed_data.get("severity")
+                mnemonic = parsed_data.get("mnemonic")
                 message = parsed_data.get("message")
             except ValueError:
                 # Cisco parsing failure
                 logging.warning("Message is not Cisco compliant")
+                return
 
         # Format output
         output = {
+            "prival": prival,
             "version": version,
+            "host": host,
+            "seq": seq,
+            "timestamp": timestamp,
             "facility": facility,
             "severity": severity,
-            "timestamp": timestamp,
-            "host": host,
-            "format": message_format,
+            "mnemonic": mnemonic,
             "message": message,
-            "message_id": message_id,
-            "application": application,
-            "process_id": process_id,
             "raw": raw,
         }
         if host:
