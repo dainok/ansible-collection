@@ -1,7 +1,7 @@
 # https://docs.ansible.com/ansible/latest/dev_guide/collections_galaxy_meta.html
 namespace: dainok
 name: common
-version: "0.0.14"
+version: "0.0.15"
 readme: README.md
 authors:
   - Andrea Dainese (@dainok)
@@ -13,7 +13,9 @@ tags:
 homepage: https://github.com/dainok/ansible-collection
 repository: https://github.com/dainok/ansible-collection
 issues: https://github.com/dainok/ansible-collection/issues
-documentation: https://github.com/dainok/ansible-collection/wiki
+documentation: https://github.com/dainok/ansible-collection
+dependencies:
+  cisco.ios: ">=8.0.0"
 build_ignore:
   - .ansible-lint
   - .bandit.yml
