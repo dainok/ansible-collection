@@ -1,0 +1,6 @@
+galaxy_info:
+  role_name: cisco_ios_interface_profile
+  author: Andrea Dainese
+  description: "This role configure ports based on profiles."
+  license: "GPL-3.0-or-later"
+  min_ansible_version: "2.15.0"

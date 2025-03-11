@@ -1,0 +1,6 @@
+galaxy_info:
+  role_name: linux_debian_keyboard
+  author: Andrea Dainese
+  description: "This role reconfigure the keyboard layout."
+  license: "GPL-3.0-or-later"
+  min_ansible_version: "2.15.0"

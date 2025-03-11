@@ -1,0 +1,6 @@
+galaxy_info:
+  role_name: cisco_ios_system
+  author: Andrea Dainese
+  description: "This role configures hostname, domain and DNS servers on Cisco IOS devices."
+  license: "GPL-3.0-or-later"
+  min_ansible_version: "2.15.0"

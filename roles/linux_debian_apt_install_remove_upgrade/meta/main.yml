@@ -1,0 +1,6 @@
+galaxy_info:
+  role_name: linux_debian_apt_install_remove_upgrade
+  author: Andrea Dainese
+  description: "This role install and eventually upgrades packages on a Debian Linux based box (like Ubuntu or Raspbian)."
+  license: "GPL-3.0-or-later"
+  min_ansible_version: "2.15.0"

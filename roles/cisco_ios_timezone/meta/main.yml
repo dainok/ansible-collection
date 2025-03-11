@@ -1,0 +1,6 @@
+galaxy_info:
+  role_name: cisco_ios_timezone
+  author: Andrea Dainese
+  description: "This role configures tiemzone and daylight saving time."
+  license: "GPL-3.0-or-later"
+  min_ansible_version: "2.15.0"
